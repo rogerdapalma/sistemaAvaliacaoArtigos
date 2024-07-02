@@ -60,20 +60,22 @@ ExecStart=/var/www/saoa.labin.ufn.edu.br/saoa/venv/bin/gunicorn --access-logfile
 ============
 Nginx
 
-Esse é o roteiro para criar outros serviços virtuais, ai e só substituir exemplo.com pelo  domínio que tu vai utilizar sem www (por exemplo, comic.labinf.ufn.edu.br)
+Esse é o roteiro para criar outros serviços virtuais, ai e só substituir saoa.labin.ufn.edu.br pelo  domínio que tu vai utilizar sem www (por exemplo, comic.labinf.ufn.edu.br)
  
 Crie o diretório para examplo.com como a seguir, usando o flag -p para criar qualquer diretório pai necessário:
  
-sudo mkdir -p /var/www/saoa.labin.ufn.edu.br/examplo.com/
+- sudo mkdir -p /var/www/saoa.labin.ufn.edu.br/examplo.com/
   
 Para que o Nginx sirva esse conteúdo, é necessário criar um bloco de servidor com as diretivas corretas. 
-Em vez de modificar o arquivo de configuração padrão diretamente, vamos criar um novo em /etc/nginx/sites-available/examplo.com:
+Em vez de modificar o arquivo de configuração padrão diretamente, vamos criar um novo em 
+
+- /etc/nginx/sites-available/saoa.labin.ufn.edu.br:
  
-sudo vim /etc/nginx/sites-available/exemplo.com
+- sudo vim /etc/nginx/sites-available/saoa.labin.ufn.edu.br
 Cole dentro o seguinte bloco de configuração, que é similar ao padrão, mas atualizado para nosso novo diretório e nome de domínio:
  
-/etc/nginx/sites-available/exemplo.com
- 
+- /etc/nginx/sites-available/saoa.labin.ufn.edu.br
+```ini
 server {
         server_name comic.lapinf.ufn.edu.br www.comic.lapinf.ufn.edu.br;
         client_body_in_file_only clean;
@@ -101,13 +103,14 @@ server {
                 proxy_pass http://unix:/var/www/comic.lapinf.ufn.edu.br/comic/comic.sock;
         }
 } 
+```
 Observe que atualizamos a configuração root para corresponder ao nosso novo diretório e 
 server_name ao nosso nome de domínio.
  
 A seguir, vamos ativar o arquivo através da criação de um link dele para o diretório sites-enabled, 
 a partir do qual o Nginx lê durante a inicialização:
  
-sudo ln -s /etc/nginx/sites-available/exemplo.com /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/saoa.labin.ufn.edu.br /etc/nginx/sites-enabled/
  
 Depois, teste para certificar-se de que não existem erros de sintaxe em quaisquer de seus arquivos do Nginx:
  
@@ -122,7 +125,7 @@ sudo systemctl restart nginx
  
 Obtendo um Certificado SSL
  
-sudo certbot --nginx -d exemplo.com -d www.exemplo.com
+sudo certbot --nginx -d saoa.labin.ufn.edu.br -d www.saoa.labin.ufn.edu.br
  
 Se isso for bem sucedido, o certbot perguntará como você gostaria de definir suas configurações de HTTPS.
 Usa 2 para sempre redirecionar para SSL
@@ -140,9 +143,9 @@ Selecione a sua escolha e pressione ENTER. A configuração será atualizada, e 
 Output
 IMPORTANT NOTES:
 - Congratulations! Your certificate and chain have been saved at:
-   /etc/letsencrypt/live/exemplo.com/fullchain.pem
+   /etc/letsencrypt/live/saoa.labin.ufn.edu.br/fullchain.pem
    Your key file has been saved at:
-   /etc/letsencrypt/live/exemplo.com/privkey.pem
+   /etc/letsencrypt/live/saoa.labin.ufn.edu.br/privkey.pem
    Your cert will expire on 2018-07-23. To obtain a new or tweaked
    version of this certificate in the future, simply run certbot again
    with the "certonly" option. To non-interactively renew *all* of
