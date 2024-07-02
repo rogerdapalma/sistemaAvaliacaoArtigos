@@ -58,7 +58,7 @@ ExecStart=/var/www/saoa.labin.ufn.edu.br/saoa/venv/bin/gunicorn --access-logfile
         - sudo systemctl enable saoa
 
 ============
-Nginx
+### Nginx
 
 Esse é o roteiro para criar outros serviços virtuais, ai e só substituir saoa.labin.ufn.edu.br pelo  domínio que tu vai utilizar sem www (por exemplo, comic.labinf.ufn.edu.br)
  
@@ -110,25 +110,27 @@ server_name ao nosso nome de domínio.
 A seguir, vamos ativar o arquivo através da criação de um link dele para o diretório sites-enabled, 
 a partir do qual o Nginx lê durante a inicialização:
  
-sudo ln -s /etc/nginx/sites-available/saoa.labin.ufn.edu.br /etc/nginx/sites-enabled/
+- sudo ln -s /etc/nginx/sites-available/saoa.labin.ufn.edu.br /etc/nginx/sites-enabled/
  
 Depois, teste para certificar-se de que não existem erros de sintaxe em quaisquer de seus arquivos do Nginx:
  
-sudo nginx -t
+- sudo nginx -t
 Salve e feche o arquivo quando tiver terminado.
  
 Se não houver problemas, reinicie o Nginx para ativar suas alterações:
  
-sudo systemctl restart nginx
+- sudo systemctl restart nginx
 
 =============================
  
-Obtendo um Certificado SSL
+### Obtendo um Certificado SSL
  
-sudo certbot --nginx -d saoa.labin.ufn.edu.br -d www.saoa.labin.ufn.edu.br
+- sudo certbot --nginx -d saoa.labin.ufn.edu.br -d www.saoa.labin.ufn.edu.br
  
 Se isso for bem sucedido, o certbot perguntará como você gostaria de definir suas configurações de HTTPS.
 Usa 2 para sempre redirecionar para SSL
+
+```markdown
 Output
 Please choose whether or not to redirect HTTP traffic to HTTPS, removing HTTP access.
 -------------------------------------------------------------------------------
@@ -139,7 +141,7 @@ change by editing your web server's configuration.
 -------------------------------------------------------------------------------
 Select the appropriate number [1-2] then [enter] (press 'c' to cancel):
 Selecione a sua escolha e pressione ENTER. A configuração será atualizada, e o Nginx irá recarregar para pegar as novas configurações. O certbot irá terminar com uma mensagem informando que o processo foi bem-sucedido e onde os seus certificados estão armazenados:
- 
+
 Output
 IMPORTANT NOTES:
 - Congratulations! Your certificate and chain have been saved at:
@@ -159,9 +161,8 @@ IMPORTANT NOTES:
  
    Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
   Donating to EFF:                    https://eff.org/donate-le
- 
-
-============
+```
+### Criando esquema de BD no MYSQL
 
 PARA VISUALIZAR, SE NECESSÁRIO, OS USUÁRIOS DO MYSQL
 SELECT user FROM mysql.user;
@@ -196,33 +197,99 @@ DATABASE_URL=mysql://sadepi:sadepi2018$@127.0.0.1:3306/sadepi_db
 
 #
 ## comandos
-- ssh alexz@labinf.ufn.edu.br
-- password
-- cd/var/www
-- ls
-- sudo mkdir saoa.labinf.ufn.edu.br
-- passworld
-- cd saoa.labinf.ufn.edu.br/
-- git clone : link (negado)
-- sudo git clone : (aceito)
-- cd saoa
-- python --version
-- python
-- sudo python3.10 -m venv venv 
-    - cd .. cd..
-    - sudo chown alexz:www-data
-    - history |grep chown
-    - sudo chown alexz:www-data -R saoa.labinf.ufn.edu.br   (o dono vai ser o alexz e o grupo sera www-data)
-- cd saoa.labinf.ufn.edu.br
-- ls -l
-- rm -r venv
-- ls
-- virtualvenv -p python3.10 venv
-- source venv/bin/activate
-- python -m pip install --upgrade pip
-    - deactvate
-- rm -r venv/
-- virtualvenv -p python3.10 venv
-- sudo apt-get upgrade/update(repositorio do ubunto, la onde ele busca)
-- sudo apt-get install python3.11
-- pip install -r requeriments.txt
+```bash
+```bash
+# Conectar ao servidor via SSH
+ssh alexz@labinf.ufn.edu.br
+
+# Digitar a senha quando solicitado
+password
+
+# Navegar até o diretório /var/www
+cd /var/www
+
+# Listar os arquivos e diretórios no diretório atual
+ls
+
+# Criar um novo diretório para o projeto saoa.labinf.ufn.edu.br
+sudo mkdir saoa.labinf.ufn.edu.br
+
+# Digitar a senha de superusuário (sudo) quando solicitado
+password
+
+# Entrar no diretório recém-criado
+cd saoa.labinf.ufn.edu.br/
+
+# Clonar o repositório do projeto (se a permissão for negada, tentar com sudo)
+git clone : link
+
+# Caso seja necessário usar sudo para clonar o repositório
+sudo git clone : link
+
+# Entrar no diretório do projeto clonado
+cd saoa
+
+# Verificar a versão do Python instalada
+python --version
+
+# Iniciar o interpretador Python
+python
+
+# Criar um ambiente virtual usando Python 3.10
+sudo python3.10 -m venv venv 
+
+# Navegar de volta ao diretório raiz
+cd .. 
+
+# Mudar a propriedade dos arquivos para o usuário alexz e grupo www-data
+sudo chown alexz:www-data
+
+# Verificar o histórico para comandos relacionados a `chown`
+history | grep chown
+
+# Mudar recursivamente a propriedade dos arquivos do projeto
+sudo chown alexz:www-data -R saoa.labinf.ufn.edu.br
+
+# Entrar no diretório do projeto
+cd saoa.labinf.ufn.edu.br
+
+# Listar os arquivos detalhadamente
+ls -l
+
+# Remover o ambiente virtual `venv`
+rm -r venv
+
+# Listar os arquivos após a remoção do ambiente virtual
+ls
+
+# Criar um novo ambiente virtual especificando Python 3.10
+virtualvenv -p python3.10 venv
+
+# Ativar o ambiente virtual
+source venv/bin/activate
+
+# Atualizar o pip no ambiente virtual
+python -m pip install --upgrade pip
+
+# Desativar o ambiente virtual
+deactivate
+
+# Remover completamente o ambiente virtual
+rm -r venv/
+
+# Criar um novo ambiente virtual usando Python 3.10 com sudo
+virtualvenv -p python3.10 venv
+
+# Atualizar/Atualizar pacotes no repositório do Ubuntu
+sudo apt-get upgrade/update (repositorio do ubunto, la onde ele busca)
+
+# Instalar o Python 3.11
+sudo apt-get install python3.11
+
+# Instalar as dependências do projeto listadas no arquivo requirements.txt
+pip install -r requirements.txt
+
+# Parar ou iniciar o serviço "projeto"
+sudo service projeto stop/start
+
+```
