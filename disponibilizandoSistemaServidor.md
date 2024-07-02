@@ -38,7 +38,7 @@ Criar e levantar a venv, e instalar os requirements.txt
 ### GUNICORN 
 
 - criar o arquivo /etc/systemd/system/saoa.service
-```
+```ini
 [Unit]
 Description=saoa daemon
 After=network.target
