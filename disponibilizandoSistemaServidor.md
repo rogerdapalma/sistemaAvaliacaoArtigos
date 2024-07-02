@@ -34,7 +34,6 @@ Clonar o projeto na pasta desejada, em geral, uma boa prática é em /var/www/ur
 
 Criar e levantar a venv, e instalar os requirements.txt
 
-============
 ### GUNICORN 
 
 - criar o arquivo /etc/systemd/system/saoa.service
@@ -49,7 +48,6 @@ Group=www-data
 WorkingDirectory=/var/www/saoa.labin.ufn.edu.br/saoa/projeto
 ExecStart=/var/www/saoa.labin.ufn.edu.br/saoa/venv/bin/gunicorn --access-logfile - --workers 3 --bind unix:/var/www/saoa.labin.ufn.edu.br/saoa/projeto/saoa.sock projeto.wsgi:application
 ```
-============
 
 - Iniciar o parser gunicorn:
     - sudo systemctl start saoa
@@ -57,7 +55,6 @@ ExecStart=/var/www/saoa.labin.ufn.edu.br/saoa/venv/bin/gunicorn --access-logfile
     - Adicionar o sistema como serviço reconhecido no sistema:
         - sudo systemctl enable saoa
 
-============
 ### Nginx
 
 Esse é o roteiro para criar outros serviços virtuais, ai e só substituir saoa.labin.ufn.edu.br pelo  domínio que tu vai utilizar sem www (por exemplo, comic.labinf.ufn.edu.br)
@@ -121,8 +118,6 @@ Se não houver problemas, reinicie o Nginx para ativar suas alterações:
  
 - sudo systemctl restart nginx
 
-=============================
- 
 ### Obtendo um Certificado SSL
  
 - sudo certbot --nginx -d saoa.labin.ufn.edu.br -d www.saoa.labin.ufn.edu.br
@@ -141,7 +136,8 @@ change by editing your web server's configuration.
 -------------------------------------------------------------------------------
 Select the appropriate number [1-2] then [enter] (press 'c' to cancel):
 Selecione a sua escolha e pressione ENTER. A configuração será atualizada, e o Nginx irá recarregar para pegar as novas configurações. O certbot irá terminar com uma mensagem informando que o processo foi bem-sucedido e onde os seus certificados estão armazenados:
-
+```
+```markdown
 Output
 IMPORTANT NOTES:
 - Congratulations! Your certificate and chain have been saved at:
@@ -165,24 +161,24 @@ IMPORTANT NOTES:
 ### Criando esquema de BD no MYSQL
 
 PARA VISUALIZAR, SE NECESSÁRIO, OS USUÁRIOS DO MYSQL
+```sql
 SELECT user FROM mysql.user;
 
 CREATE DATABASE nomeDoSistema_db;
 
-CREATE USER ‘nomeDoSistema’@‘localhost' IDENTIFIED BY ‘senhaDesejada’;
+CREATE USER saoa@‘localhost' IDENTIFIED BY ‘senhaDesejada’;
 
-GRANT ALL PRIVILEGES ON nomeDoSistema_db.* TO ‘nomeDoSistema’@‘localhost' IDENTIFIED BY 'senhaDesejada';
+GRANT ALL PRIVILEGES ON saoa_db.* TO saoa@‘localhost' IDENTIFIED BY 'senhaDesejada';
 
-============
-Criando o primeiro usuário
+-- Criando o primeiro usuário
 
-na pasta projeto do sistema, com a venv ativa,
-rodar migrate
-
+--na pasta projeto do sistema, com a venv ativa,
+-- rodar migrate
+-- python projeto/manage.py shell
 
 from usuario.models import Usuario
 u = Usuario()
-u.nome = 'SADEPI'
+u.nome = 'Nome do usuario'
 u.tipo = 'ADMINISTRADOR'
 u.email = 'projetos@ufn.edu.br'
 u.is_active = True
@@ -191,13 +187,14 @@ u.save()
 u.set_password('projetos@ufn.edu.br')
 u.save()
 
-=======
-.env
-DATABASE_URL=mysql://sadepi:sadepi2018$@127.0.0.1:3306/sadepi_db
-
-#
+-------------------------------------------
+-- Configurar .env o driver do MYSQL
+    -- No arquivo .env adicionar:
+--.env
+DATABASE_URL=mysql://saoa:senhaEscolhida$@127.0.0.1:3306/saoa_db
+```
 ## comandos
-```bash
+
 ```bash
 # Conectar ao servidor via SSH
 ssh alexz@labinf.ufn.edu.br
