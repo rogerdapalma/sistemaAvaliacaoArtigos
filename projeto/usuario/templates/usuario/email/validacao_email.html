@@ -2,13 +2,13 @@
 {% load bootstrap3 %}
 
 {% block subject %}
-    {{ usuario.nome }}, bem-vindo(a) ao TFG ONLINE. Valide o seu cadastro!
+    {{ usuario.nome }} valide seu cadastro no SAOA!
 {% endblock %}
 
 {% block html %}
     <br>
-    <h2>TFG ONLINE</h2>
-    <p>{{ usuario.nome }}, antes de utilizar a plataforma <strong>TFG ONLINE</strong> você precisa habilitar a sua conta.</p>
+    <h2>Bem-vindo(a) ao SAOA. Processo de validação de cadastro!</h2>
+    <p>{{ usuario.nome }}, antes de utilizar a plataforma <strong>SAOA</strong> você precisa habilitar a sua conta.</p>
     <p>Clique <a href='{{ usuario.get_usuario_register_activate_url }}'>aqui</a> para prosseguir.</a> </p>
     <br>
     <p>***** MENSAGEM GERADA AUTOMATICAMENTE. NÃO RESPONDA. *****</p>

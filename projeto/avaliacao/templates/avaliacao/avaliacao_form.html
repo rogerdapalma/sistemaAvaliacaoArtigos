@@ -1,0 +1,628 @@
+{% extends 'core/base.html' %}
+{% load bootstrap3 %}
+
+{% block actions %}
+{% endblock %}
+
+{% block title %}
+	{% bootstrap_icon 'check' %} Avaliação de TCC - Banca
+{% endblock %}
+
+{% block content %}
+
+<div class="alert alert-info">
+  <strong>Coordenador, atenção!!</strong> Use esse formulário somente para acompanhar, regularizar ou atualizar avaliações de outros professores.
+</div>  
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <h4>
+        <small>Submissão a ser avaliada:</small><br>
+        {{ object.submissao }} {{ submissao }}<br><br>
+   
+        <small>Orientador:</small><br>
+        {{ object.submissao.orientador.nome }} {{ submissao.orientador.nome }}
+    </h4> 
+    {% buttons  %}
+      <a href="#coordenacao" class="btn btn-info" role="button">Área Coordenador</a>
+    {% endbuttons %}
+  </div>
+</div>
+
+<form class="form" role="form" method="POST" enctype="multipart/form-data" name="avaliacao_visao_administrador"> 
+  {% csrf_token %}
+  {{ form.non_field_errors }} 
+
+  <div class="hidden">
+    {% bootstrap_field form.submissao %}
+  </div>
+  
+  {% if object %}
+    <span class='hidden'>
+      {% bootstrap_field form.avaliador_responsavel %}
+      {% bootstrap_field form.avaliador_suplente %}
+      {% bootstrap_field form.avaliador_convidado %}
+      
+    </span>
+  {% else %}
+    {% bootstrap_field form.avaliador_responsavel %}
+    {% bootstrap_field form.avaliador_suplente %}
+    {% bootstrap_field form.avaliador_convidado %}
+    
+  {% endif %}
+
+  {% if object %} 
+    <h3>Avaliações</h3>
+    
+    <!-- avaliador orientador -->
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          Avaliador orientador: {{ object.submissao.orientador.nome }} <br><br>
+          {% bootstrap_field form.apto %}<br>
+          {% bootstrap_field form.rebanca %}<br>
+          Status do parecer: 
+          {% if object.dt_avaliacao_orientador %}
+            <span class="label label-success">
+              Parecer enviado em: {{ object.dt_avaliacao_orientador|date:"d/m/Y H:i" }}
+            </span>
+          {% else %}
+            <span class="label label-warning">
+              Avaliação não finalizada
+            </span>
+          {% endif %}
+        </h3>
+      </div>
+      <div class="panel-body">
+        <table class="table table-condensed table-responsive">
+          <thead>
+            <tr>
+              <th>Critérios de Avaliação</th>
+              <th>Peso</th>
+              <th>Avaliação (0 a 10)</th>
+              <th>Final</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                {{ form.merito_acompanhamento_orientador.label|upper }}<br>
+                <ul>
+                  <li>Interesse demonstrado, iniciativa no desenvolvimento do trabalho,<br>frequência e participação nos encontros com o professor orientador</li>
+                </ul>
+              </td>
+              <td>
+                <input class="form-control" id="id_peso_merito_acompanhamento_orientador" value="{{ object.dic_pesos.merito_acompanhamento_orientador }}" readonly>
+              </td>
+              <td>
+                {{ form.merito_acompanhamento_orientador }}
+                <div class="text-danger">{{ form.merito_acompanhamento_orientador.errors }}</div>
+              </td>
+              <td>
+                <input class="form-control" id="id_nota_merito_acompanhamento_orientador" readonly>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                {{ form.merito_desenvolvimento_orientador.label|upper }}
+                <ul>
+                  <li>Adequação entre teoria, método e objetivos</li>
+                  <li>Atualização e adequação da bibliografia selecionada</li>
+                  <li>Domínio do referencial teórico e bibliográfico</li>
+                  <li>Análise crítica do problema e da solução</li>
+                  <li>Contribuição pessoal</li>
+                  <li>Contribuição para a área de conhecimento (aplicabilidade e/ou<br>características inovadoras)</li>
+                  <li>Consistência com a proposta apresentada</li>
+                </ul>
+              </td>
+              <td>
+                <input class="form-control" id="id_peso_merito_desenvolvimento_orientador" value="{{ object.dic_pesos.merito_desenvolvimento_orientador }}" readonly>
+              </td>
+              <td>
+                {{ form.merito_desenvolvimento_orientador }}
+                <div class="text-danger">{{ form.merito_desenvolvimento_orientador.errors }}</div>
+              </td>
+              <td>
+                <input class="form-control" id="id_nota_merito_desenvolvimento_orientador" readonly>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                {{ form.merito_redacao_orientador.label|upper }}
+                <ul>
+                  <li>Organização do trabalho</li>
+                  <li>Coerência interna e progressão lógico-semântica</li>
+                  <li>Bibliografia adequada e completa</li>
+                  <li>Atendimento as normas IEEE</li>
+                  <li>Redação clara e inteligível com correção gramatical</li>
+                  <li>Introdução objetiva e precisa</li>
+                  <li>Conclusão crítica</li>                  
+                </ul>
+              </td>
+              <td>
+                <input class="form-control" id="id_peso_merito_redacao_orientador" value="{{ object.dic_pesos.merito_redacao_orientador }}" readonly>
+              </td>
+              <td>
+                {{ form.merito_redacao_orientador }}
+                <div class="text-danger">{{ form.merito_redacao_orientador.errors }}</div>
+              </td>
+              <td>
+                <input class="form-control" id="id_nota_merito_redacao_orientador" readonly>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                {{ form.merito_apresentacao_orientador.label|upper }}
+                <ul>
+                  <li>Domínio do Assunto</li>
+                  <li>Organização do Conteúdo</li>
+                  <li>Distribuição adequada do tempo</li>
+                </ul>
+              </td>
+              <td>
+                <input class="form-control" id="id_peso_merito_apresentacao_orientador" value="{{ object.dic_pesos.merito_apresentacao_orientador }}" readonly>
+              </td>
+              <td>
+                {{ form.merito_apresentacao_orientador }}
+                <div class="text-danger">{{ form.merito_apresentacao_orientador.errors }}</div>
+              </td>
+              <td>
+                <input class="form-control" id="id_nota_merito_apresentacao_orientador" readonly>
+              </td>
+            </tr>
+            <td><b>NOTA FINAL</b></td>
+              <td></td>
+              <td></td>
+              <td>  
+                <b>
+                  <input class="form-control" id="id_nota_final_orientador" readonly>
+                </b>
+              </td>
+          </tbody>
+        </table>
+        {% bootstrap_field form.parecer_avaliador_orientador %}
+        {% if object.rebanca == 'SIM'%}
+          <h3><span class="label label-warning">Rebanca</span></h3>
+          {% bootstrap_field form.parecer_rebanca_avaliador_orientador %}
+        {% endif %}
+        {% bootstrap_field form.arquivo_corrigido_orientador %}
+      </div>
+    </div>
+
+    <!-- avaliador responsavel -->
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          Avaliador 1: {{ object.avaliador_responsavel.nome }} <br><br>
+          Status do parecer: 
+          {% if object.dt_avaliacao_responsavel %}
+            <span class="label label-success">
+              Parecer enviado em: {{ object.dt_avaliacao_responsavel|date:"d/m/Y H:i" }} 
+            </span>
+          {% else %}
+            <span class="label label-warning">
+              Avaliação não finalizada
+            </span>
+          {% endif %}
+        </h3>
+      </div>
+      <div class="panel-body">
+        <table class="table table-condensed table-responsive">
+          <thead>
+            <tr>
+              <th>Critérios de Avaliação</th>
+              <th>Peso</th>
+              <th>Avaliação (0 a 10)</th>
+              <th>Final</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr>
+              <td>
+                {{ form.merito_desenvolvimento_responsavel.label|upper }}
+                <ul>
+                  <li>Adequação entre teoria, método e objetivos</li>
+                  <li>Atualização e adequação da bibliografia selecionada</li>
+                  <li>Domínio do referencial teórico e bibliográfico</li>
+                  <li>Análise crítica do problema e da solução</li>
+                  <li>Contribuição pessoal</li>
+                  <li>Contribuição para a área de conhecimento (aplicabilidade e/ou<br>características inovadoras)</li>
+                  <li>Consistência com a proposta apresentada</li>
+                </ul>
+              </td>
+              <td>
+                <input class="form-control" id="id_peso_merito_desenvolvimento_responsavel" value="{{ object.dic_pesos.merito_desenvolvimento_responsavel_suplente }}" readonly>
+              </td>
+              <td>
+                {{ form.merito_desenvolvimento_responsavel }}
+                <div class="text-danger">{{ form.merito_desenvolvimento_responsavel.errors }}</div>
+              </td>
+              <td>
+                <input class="form-control" id="id_nota_merito_desenvolvimento_responsavel" readonly>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                {{ form.merito_redacao_responsavel.label|upper }}
+                <ul>
+                  <li>Organização do trabalho</li>
+                  <li>Coerência interna e progressão lógico-semântica</li>
+                  <li>Bibliografia adequada e completa</li>
+                  <li>Atendimento as normas IEEE</li>
+                  <li>Redação clara e inteligível com correção gramatical</li>
+                  <li>Introdução objetiva e precisa</li>
+                  <li>Conclusão crítica</li>                  
+                </ul>
+              </td>
+              <td>
+                <input class="form-control" id="id_peso_merito_redacao_responsavel" value="{{ object.dic_pesos.merito_redacao_responsavel_suplente }}" readonly>
+              </td>
+              <td>
+                {{ form.merito_redacao_responsavel }}
+                <div class="text-danger">{{ form.merito_redacao_responsavel.errors }}</div>
+              </td>
+              <td>
+                <input class="form-control" id="id_nota_merito_redacao_responsavel" readonly>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                {{ form.merito_apresentacao_responsavel.label|upper }}
+                <ul>
+                  <li>Domínio do Assunto</li>
+                  <li>Organização do Conteúdo</li>
+                  <li>Distribuição adequada do tempo</li>
+                </ul>
+              </td>
+              <td>
+                <input class="form-control" id="id_peso_merito_apresentacao_responsavel" value="{{ object.dic_pesos.merito_apresentacao_responsavel_suplente }}" readonly>
+              </td>
+              <td>
+                {{ form.merito_apresentacao_responsavel }} 
+                <div class="text-danger">{{ form.merito_apresentacao_responsavel.errors }}</div>
+              </td>
+              <td>
+                <input class="form-control" id="id_nota_merito_apresentacao_responsavel" readonly>
+              </td>
+            </tr>
+            <td><b>NOTA FINAL</b></td>
+              <td></td>
+              <td></td>
+              <td>  
+                <b>
+                  <input class="form-control" id="id_nota_final_responsavel" readonly>
+                </b>
+              </td>
+          </tbody>
+        </table>
+        {% bootstrap_field form.parecer_avaliador_responsavel %}
+        {% if object.rebanca == 'SIM'%}
+          <h3><span class="label label-warning">Rebanca</span></h3>
+          {% bootstrap_field form.parecer_rebanca_avaliador_responsavel %}
+        {% endif %}
+        {% bootstrap_field form.arquivo_corrigido_responsavel %}
+      </div>
+    </div>
+
+    <!-- avaliador suplente -->
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          Avaliador 2: {{ object.avaliador_suplente.nome }} <br><br>
+          Status do parecer: 
+          {% if object.dt_avaliacao_suplente %}
+            <span class="label label-success">
+              Parecer enviado em: {{ object.dt_avaliacao_suplente|date:"d/m/Y H:i" }}
+            </span>
+          {% else %}
+            <span class="label label-warning">
+              Avaliação não finalizada
+            </span>
+          {% endif %}
+        </h3>
+      </div>
+      <div class="panel-body">
+        <table class="table table-condensed table-responsive">
+          <thead>
+            <tr>
+              <th>Critérios de Avaliação</th>
+              <th>Peso</th>
+              <th>Avaliação (0 a 10)</th>
+              <th>Final</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+
+              <td>
+                {{ form.merito_desenvolvimento_suplente.label|upper }}
+                <ul>
+                  <li>Adequação entre teoria, método e objetivos</li>
+                  <li>Atualização e adequação da bibliografia selecionada</li>
+                  <li>Domínio do referencial teórico e bibliográfico</li>
+                  <li>Análise crítica do problema e da solução</li>
+                  <li>Contribuição pessoal</li>
+                  <li>Contribuição para a área de conhecimento (aplicabilidade e/ou<br>características inovadoras)</li>
+                  <li>Consistência com a proposta apresentada</li>
+                </ul>
+              </td>
+              <td>
+                <input class="form-control" id="id_peso_merito_desenvolvimento_suplente" value="{{ object.dic_pesos.merito_desenvolvimento_responsavel_suplente }}" readonly>
+              </td>
+              <td>
+                {{ form.merito_desenvolvimento_suplente }}
+                <div class="text-danger">{{ form.merito_desenvolvimento_suplente.errors }}</div>
+              </td>
+              <td>
+                <input class="form-control" id="id_nota_merito_desenvolvimento_suplente" readonly>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                {{ form.merito_redacao_suplente.label|upper }}
+                <ul>
+                  <li>Organização do trabalho</li>
+                  <li>Coerência interna e progressão lógico-semântica</li>
+                  <li>Bibliografia adequada e completa</li>
+                  <li>Atendimento as normas IEEE</li>
+                  <li>Redação clara e inteligível com correção gramatical</li>
+                  <li>Introdução objetiva e precisa</li>
+                  <li>Conclusão crítica</li>                  
+                </ul>
+              </td>
+              <td>
+                <input class="form-control" id="id_peso_merito_redacao_suplente" value="{{ object.dic_pesos.merito_redacao_responsavel_suplente }}" readonly>
+              </td>
+              <td>
+                {{ form.merito_redacao_suplente }}
+                <div class="text-danger">{{ form.merito_redacao_suplente.errors }}</div>
+              </td>
+              <td>
+                <input class="form-control" id="id_nota_merito_redacao_suplente" readonly>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                {{ form.merito_apresentacao_suplente.label|upper }}
+                <ul>
+                  <li>Domínio do Assunto</li>
+                  <li>Organização do Conteúdo</li>
+                  <li>Distribuição adequada do tempo</li>
+                </ul>
+              </td>
+              <td>
+                <input class="form-control" id="id_peso_merito_apresentacao_suplente" value="{{ object.dic_pesos.merito_apresentacao_responsavel_suplente }}" readonly>
+              </td>
+              <td>
+                {{ form.merito_apresentacao_suplente }} 
+                <div class="text-danger">{{ form.merito_apresentacao_suplente.errors }}</div>
+              </td>
+              <td>
+                <input class="form-control" id="id_nota_merito_apresentacao_suplente" readonly>
+              </td>
+            </tr>
+            <tr>
+              <td><b>NOTA FINAL</b></td>
+              <td></td>
+              <td></td>
+              <td>  
+                <b>
+                  <input class="form-control" id="id_nota_final_suplente" readonly>
+                </b>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        {% bootstrap_field form.parecer_avaliador_suplente %}
+        {% if object.rebanca == 'SIM'%}
+          <h3><span class="label label-warning">Rebanca</span></h3>
+          {% bootstrap_field form.parecer_rebanca_avaliador_suplente %}
+        {% endif %}
+        {% bootstrap_field form.arquivo_corrigido_suplente %}
+      </div>
+    </div>
+
+    <!-- avaliador convidado -->
+    {% if object.avaliador_convidado %}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">
+            Avaliador <span class="label label-info">CONVIDADO</span> : {{ object.avaliador_convidado.nome }} <br><br>
+            Status do parecer: 
+            {% if object.dt_avaliacao_avaliador_convidado %}
+              <span class="label label-success">
+                Parecer enviado em: {{ object.dt_avaliacao_convidado|date:"d/m/Y H:i" }}
+              </span>
+            {% else %}
+              <span class="label label-warning">
+                Avaliação não finalizada
+              </span>
+            {% endif %}
+          </h3>
+        </div>
+        <div class="panel-body">
+          <table class="table table-condensed table-responsive">
+            <thead>
+              <tr>
+                <th>Critérios de Avaliação</th>
+                <th>Peso</th>
+                <th>Avaliação (0 a 10)</th>
+                <th>Final</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+
+                <td>
+                  {{ form.merito_desenvolvimento_convidado.label|upper }}
+                  <ul>
+                    <li>Adequação entre teoria, método e objetivos</li>
+                    <li>Atualização e adequação da bibliografia selecionada</li>
+                    <li>Domínio do referencial teórico e bibliográfico</li>
+                    <li>Análise crítica do problema e da solução</li>
+                    <li>Contribuição pessoal</li>
+                    <li>Contribuição para a área de conhecimento (aplicabilidade e/ou<br>características inovadoras)</li>
+                    <li>Consistência com a proposta apresentada</li>
+                  </ul>
+                </td>
+                <td>
+                  <input class="form-control" id="id_peso_merito_desenvolvimento_convidado" value="{{ object.dic_pesos.merito_desenvolvimento_responsavel_suplente }}" readonly>
+                </td>
+                <td>
+                  {{ form.merito_desenvolvimento_convidado }}
+                  <div class="text-danger">{{ form.merito_desenvolvimento_convidado.errors }}</div>
+                </td>
+                <td>
+                  <input class="form-control" id="id_nota_merito_desenvolvimento_convidado" readonly>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  {{ form.merito_redacao_convidado.label|upper }}
+                  <ul>
+                    <li>Organização do trabalho</li>
+                    <li>Coerência interna e progressão lógico-semântica</li>
+                    <li>Bibliografia adequada e completa</li>
+                    <li>Atendimento as normas IEEE</li>
+                    <li>Redação clara e inteligível com correção gramatical</li>
+                    <li>Introdução objetiva e precisa</li>
+                    <li>Conclusão crítica</li>                  
+                  </ul>
+                </td>
+                <td>
+                  <input class="form-control" id="id_peso_merito_redacao_convidado" value="{{ object.dic_pesos.merito_redacao_responsavel_suplente }}" readonly>
+                </td>
+                <td>
+                  {{ form.merito_redacao_convidado }}
+                  <div class="text-danger">{{ form.merito_redacao_convidado.errors }}</div>
+                </td>
+                <td>
+                  <input class="form-control" id="id_nota_merito_redacao_convidado" readonly>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  {{ form.merito_apresentacao_convidado.label|upper }}
+                  <ul>
+                    <li>Domínio do Assunto</li>
+                    <li>Organização do Conteúdo</li>
+                    <li>Distribuição adequada do tempo</li>
+                  </ul>
+                </td>
+                <td>
+                  <input class="form-control" id="id_peso_merito_apresentacao_convidado" value="{{ object.dic_pesos.merito_apresentacao_responsavel_suplente }}" readonly>
+                </td>
+                <td>
+                  {{ form.merito_apresentacao_convidado }} 
+                  <div class="text-danger">{{ form.merito_apresentacao_convidado.errors }}</div>
+                </td>
+                <td>
+                  <input class="form-control" id="id_nota_merito_apresentacao_convidado" readonly>
+                </td>
+              </tr>
+              <tr>
+                <td><b>NOTA FINAL</b></td>
+                <td></td>
+                <td></td>
+                <td>  
+                  <b>
+                    <input class="form-control" id="id_nota_final_convidado" readonly>
+                  </b>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          {% bootstrap_field form.parecer_avaliador_convidado %}
+          {% if object.rebanca == 'SIM'%}
+            <h3><span class="label label-warning">Rebanca</span></h3>
+            {% bootstrap_field form.parecer_rebanca_avaliador_convidado %}
+          {% endif %}
+          {% bootstrap_field form.arquivo_corrigido_convidado %}
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- seção dos coordenadores -->
+    <h3>Coordenação TCC</h3>
+    <div class="panel panel-default" id="coordenacao">
+        <div class="panel-heading">
+          <h3 class="panel-title">Intercorrências e médias das avaliações</h3>
+        </div>
+        {% if object.avaliador_convidado %}
+          <div class="panel-body">
+            <span class="label label-warning">ATENÇÃO COORDENADOR! ESTA AVALIAÇÃO POSSUI PROFESSOR CONVIDADO.</span>
+          </div>
+        {% endif %}
+        <div class="panel-body">
+          {% bootstrap_field form.intercorrencias %}
+          <table class="table table-condensed table-responsive">
+            <thead>
+              <tr>
+                <th></th>
+                <th class="text-center">{{ object.submissao.orientador.nome }}</th>
+                <th class="text-center">{{ object.avaliador_responsavel.nome }}</th>
+                <th class="text-center">{{ object.avaliador_suplente.nome }}</th>
+                {% if object.avaliador_convidado %}
+                  <th class="text-center">{{ object.avaliador_convidado.nome }}</th>
+                {% endif %}
+                <th class="text-center">Média para AGENDA</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>NOTA</td>
+                <td class="text-center">
+                  <div class="hidden">
+                    {{ form.nota_final_orientador }}
+                  </div>
+                  <input class="form-control" style="text-align:center" id="id_nota_final_orientador_coordenador" readonly>
+                </td>
+                <td class="text-center">
+                  <div class="hidden">
+                    {{ form.nota_final_responsavel }}
+                  </div>
+                  <input class="form-control" style="text-align:center" id="id_nota_final_responsavel_coordenador" readonly>
+                </td>
+                <td class="text-center">
+                  <div class="hidden">
+                    {{ form.nota_final_suplente }}
+                  </div>
+                  <input class="form-control" style="text-align:center" id="id_nota_final_suplente_coordenador" readonly>
+                </td>
+                {% if object.avaliador_convidado %}
+                  <td class="text-center">
+                    <div class="hidden">
+                      {{ form.nota_final_convidado }}
+                    </div>
+                    <input class="form-control" style="text-align:center" id="id_nota_final_convidado_coordenador" readonly>
+                  </td>
+                {% endif %}
+                <td class="text-center">
+                  <div class="hidden">
+                    {{ form.media_final_avaliacao }}
+                  </div>
+                  <input class="form-control" style="text-align:center" id="id_media_final" readonly>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+    </div>
+  {% endif %}
+  
+  {% buttons submit='Gravar' %}
+    <a href="javascript:history.go(-2);" class="btn btn-warning" role="button">Voltar</a>
+  {% endbuttons %}
+</form>
+
+{% endblock %}

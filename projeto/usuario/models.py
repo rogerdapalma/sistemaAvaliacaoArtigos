@@ -7,6 +7,8 @@ from django.db.models import Q
 from django.urls import reverse
 #from django.utils.translation import ugettext_lazy as _
 
+from evento.models import Evento
+
 from datetime import timedelta, datetime
 
 from utils.gerador_hash import gerar_hash
@@ -66,6 +68,7 @@ class Usuario(AbstractBaseUser):
     email = models.EmailField('Email', unique=True, max_length=100, db_index=True)
     celular = models.CharField('Número celular com DDD *', max_length=14, help_text="Use DDD, por exemplo 55987619832")
     cpf = models.CharField('CPF *', max_length=14, help_text='ATENÇÃO: Somente os NÚMEROS')    
+    aceita_termo = models.BooleanField('Marque o aceite do termo de consentimento', default=False, help_text='Se marcado, usuário tem consentimento de uso do sistema')
     
     is_active = models.BooleanField('Ativo', default=False, help_text='Se ativo, o usuário tem permissão para acessar o sistema')
     slug = models.SlugField('Hash',max_length= 200,null=True,blank=True)
@@ -131,3 +134,8 @@ class Usuario(AbstractBaseUser):
     @property
     def get_usuario_register_activate_url(self):
         return '%s%s' % (settings.DOMINIO_URL, reverse('usuario_register_activate', kwargs={'slug': self.slug}))
+
+
+    @property
+    def total_eventos_ativos(self):
+        return Evento.objects.filter(is_active=True).count()

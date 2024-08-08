@@ -16,7 +16,9 @@ class EventoAtivoManager(models.Manager):
 
 class Evento(models.Model):       
     nome = models.CharField('Nome do evento *', unique=True, db_index=True, max_length=150, help_text='* Campo obrigatório')
+    descricao = models.TextField('Descrição do evento', null=True, blank=True, max_length=500 ,help_text='Coque aqui uma descrição do evento para ajudar os autores a submeterem seus trabalhos')
     tipo = models.ForeignKey('tipo_evento.TipoEvento', verbose_name= 'Tipo do evento *', on_delete=models.PROTECT, related_name='tipo_evento')
+    site = models.URLField('Site do evento', max_length=100, help_text='Informe o site oficial do evento', null=True, blank=True)   
     instituicao = models.ForeignKey('instituicao.Instituicao', verbose_name= 'Instituição responsável pelo evento *', on_delete=models.PROTECT, related_name='instituicao')
     data_inicio = models.DateField('Data de início do evento *', max_length=10, help_text='Use dd/mm/aaaa')
     data_limite_trabalhos = models.DateField('Data limite para envio de trabalhos *', max_length=10, help_text='Use dd/mm/aaaa')

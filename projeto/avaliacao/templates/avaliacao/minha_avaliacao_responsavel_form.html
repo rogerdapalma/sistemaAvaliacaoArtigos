@@ -1,0 +1,189 @@
+{% extends 'core/base.html' %}
+{% load bootstrap3 %}
+
+{% block actions %}
+{% endblock %}
+
+{% block title %}
+	{% bootstrap_icon 'check' %} Minha avaliação TCC
+{% endblock %}
+
+{% block content %}
+<div class="panel panel-default">
+  <div class="panel-body">
+    <h4>
+        <small>Submissão a ser avaliada:</small><br><br>
+        {{ object.submissao }} <br><br>
+        
+        <table class="table table-condensed table-responsive">
+          <tr class="text-center">
+            <td>
+              <small>TEXTO PARA BANCA</small><br><br>
+              {% if  object.submissao.arquivo_texto_tfgbanca %}
+                <a href="{{ object.submissao.arquivo_texto_tfgbanca.url }}" target="_blank" class="btn btn-sm btn-success">
+                  {% bootstrap_icon 'download' %}
+                </a>
+              {% else %}
+                <a href="" target="_blank" class="btn btn-sm btn-warning disabled">
+                  {% bootstrap_icon 'download' %}
+                </a>
+              {% endif %}
+            </td>
+            <td>
+              <small>ORIENTAÇÕES PARA O PROTÓTIPO</small><br><br>
+              {% if  object.submissao.arquivo_produto_tfgfinal %}
+                <a href="{{ object.submissao.arquivo_produto_tfgfinal.url }}" target="_blank" class="btn btn-sm btn-success">
+                  {% bootstrap_icon 'download' %}
+                </a>
+              {% else %}
+                <a href="" target="_blank" class="btn btn-sm btn-warning disabled">
+                  {% bootstrap_icon 'download' %}
+                </a>
+              {% endif %}
+            </td>
+            <td>
+              <small>TEXTO PARA REBANCA </small><br><br>
+              {% if  object.submissao.arquivo_texto_tfgrebanca  %}
+                <a href="{{ object.submissao.arquivo_texto_tfgrebanca.url }}" target="_blank" class="btn btn-sm btn-success">
+                  {% bootstrap_icon 'download' %}
+                </a>
+              {% else %}
+                <a href="" target="_blank" class="btn btn-sm btn-warning disabled">
+                  {% bootstrap_icon 'download' %}
+                </a>
+              {% endif %}
+            </td>
+            <td>
+              <small>TEXTO FINAL PARA BIBLIOTECA</small><br><br>
+              {% if  object.submissao.arquivo_texto_tfgfinal  %}
+                <a href="{{ object.submissao.arquivo_texto_tfgfinal.url }}" target="_blank" class="btn btn-sm btn-success">
+                  {% bootstrap_icon 'download' %}
+                </a>
+              {% else %}
+                <a href="" target="_blank" class="btn btn-sm btn-warning disabled">
+                  {% bootstrap_icon 'download' %}
+                </a>
+              {% endif %}
+            </td>
+          </tr>
+        </table>
+    </h4> 
+  </div>
+</div>
+
+<form class="form" role="form" method="POST" enctype="multipart/form-data" name="form_avaliacao_responsavel"> 
+  {% csrf_token %}
+  {{ form.non_field_errors }} 
+  <!-- avaliador responsavel -->
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <table class="table table-condensed table-responsive">
+        <thead>
+          <tr>
+            <th>Critérios de Avaliação</th>
+            <th>Peso</th>
+            <th>Avaliação (0 a 10)</th>
+            <th>Final</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              {{ form.merito_desenvolvimento_responsavel.label|upper }}
+              <ul>
+                <li>Adequação entre teoria, método e objetivos</li>
+                <li>Atualização e adequação da bibliografia selecionada</li>
+                <li>Domínio do referencial teórico e bibliográfico</li>
+                <li>Análise crítica do problema e da solução</li>
+                <li>Contribuição pessoal</li>
+                <li>Contribuição para a área de conhecimento (aplicabilidade e/ou<br>características inovadoras)</li>
+                <li>Consistência com a proposta apresentada</li>
+              </ul>
+            </td>
+            <td>
+              <input class="form-control" id="id_peso_merito_desenvolvimento_responsavel" value="{{ object.dic_pesos.merito_desenvolvimento_responsavel_suplente }}" readonly>
+            </td>
+            <td>
+              {{ form.merito_desenvolvimento_responsavel }}
+              <div class="text-danger">{{ form.merito_desenvolvimento_responsavel.errors }}</div>
+            </td>
+            <td>
+              <input class="form-control" id="id_nota_merito_desenvolvimento_responsavel" readonly>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              {{ form.merito_redacao_responsavel.label|upper }}
+              <ul>
+                <li>Organização do trabalho</li>
+                <li>Coerência interna e progressão lógico-semântica</li>
+                <li>Bibliografia adequada e completa</li>
+                <li>Atendimento as normas IEEE</li>
+                <li>Redação clara e inteligível com correção gramatical</li>
+                <li>Introdução objetiva e precisa</li>
+                <li>Conclusão crítica</li>                  
+              </ul>
+            </td>
+            <td>
+              <input class="form-control" id="id_peso_merito_redacao_responsavel" value="{{ object.dic_pesos.merito_redacao_responsavel_suplente }}" readonly>
+            </td>
+            <td>
+              {{ form.merito_redacao_responsavel }}
+              <div class="text-danger">{{ form.merito_redacao_responsavel.errors }}</div>
+            </td>
+            <td>
+              <input class="form-control" id="id_nota_merito_redacao_responsavel" readonly>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              {{ form.merito_apresentacao_responsavel.label|upper }}
+              <ul>
+                <li>Domínio do Assunto</li>
+                <li>Organização do Conteúdo</li>
+                <li>Distribuição adequada do tempo</li>
+              </ul>
+            </td>
+            <td>
+              <input class="form-control" id="id_peso_merito_apresentacao_responsavel" value="{{ object.dic_pesos.merito_apresentacao_responsavel_suplente }}" readonly>
+            </td>
+            <td>
+              {{ form.merito_apresentacao_responsavel }} 
+              <div class="text-danger">{{ form.merito_apresentacao_responsavel.errors }}</div>
+            </td>
+            <td>
+              <input class="form-control" id="id_nota_merito_apresentacao_responsavel" readonly>
+            </td>
+          </tr>
+          <td><b>NOTA FINAL</b></td>
+            <td></td>
+            <td></td>
+            <td>  
+              <b>
+                <input class="form-control" id="id_nota_final_responsavel" readonly>
+              </b>
+              <div class='hidden'>
+                {{ form.nota_final_responsavel }}
+              </div>
+            </td>
+        </tbody>
+      </table>
+      {% bootstrap_field form.parecer_avaliador_responsavel %}
+      {% if object.rebanca == 'SIM'%}
+          <hr>
+          <h2><span class="label label-warning">REBANCA</span></h2>
+          <hr>
+          {% bootstrap_field form.parecer_rebanca_avaliador_responsavel %}<br>
+          <p>
+            Caso queira enviar novamente arquivo com correções, pode substituir o arquivo de sugestões anterior.
+          </p>
+      {% endif %}
+      {% bootstrap_field form.arquivo_corrigido_responsavel %}
+    </div>
+  </div>
+    
+  {% buttons submit='Gravar' %}
+    <a href="javascript:history.go(-1);" class="btn btn-warning" role="button">Voltar</a>
+  {% endbuttons %}
+</form>
+{% endblock %}

@@ -1,0 +1,246 @@
+{% extends 'core/base.html' %}
+{% load bootstrap3 %}
+
+{% block actions %}
+{% endblock %}
+
+{% block title %}
+	{% bootstrap_icon 'check' %} Minha avaliação TCC
+{% endblock %}
+
+{% block content %}
+<div class="panel panel-default">
+  <div class="panel-body">
+    <h4>
+        <small>Submissão a ser avaliada:</small><br><br>
+        {{ object.submissao }} <br><br>
+        
+        <table class="table table-condensed table-responsive">
+          <tr class="text-center">
+            <td>
+              <small>TEXTO PARA ORIENTADOR</small><br><br>
+              {% if  object.submissao.arquivo_texto_tfgorientador %}
+                <a href="{{ object.submissao.arquivo_texto_tfgorientador.url }}" target="_blank" class="btn btn-sm btn-success">
+                  {% bootstrap_icon 'download' %}
+                </a>
+              {% else %}
+                <a href="" target="_blank" class="btn btn-sm btn-warning disabled">
+                  {% bootstrap_icon 'download' %}
+                </a>
+              {% endif %}
+            </td>
+
+            <td>
+              <small>TEXTO PARA BANCA</small><br><br>
+              {% if  object.submissao.arquivo_texto_tfgbanca %}
+                <a href="{{ object.submissao.arquivo_texto_tfgbanca.url }}" target="_blank" class="btn btn-sm btn-success">
+                  {% bootstrap_icon 'download' %}
+                </a>
+              {% else %}
+                <a href="" target="_blank" class="btn btn-sm btn-warning disabled">
+                  {% bootstrap_icon 'download' %}
+                </a>
+              {% endif %}
+            </td>
+
+            <td>
+              <small>ORIENTAÇÕES PARA O PROTÓTIPO</small><br><br>
+              {% if  object.submissao.arquivo_produto_tfgfinal %}
+                <a href="{{ object.submissao.arquivo_produto_tfgfinal.url }}" target="_blank" class="btn btn-sm btn-success">
+                  {% bootstrap_icon 'download' %}
+                </a>
+              {% else %}
+                <a href="" target="_blank" class="btn btn-sm btn-warning disabled">
+                  {% bootstrap_icon 'download' %}
+                </a>
+              {% endif %}
+            </td>
+
+            <td>
+              <small>TEXTO PARA REBANCA </small><br><br>
+              {% if  object.submissao.arquivo_texto_tfgrebanca  %}
+                <a href="{{ object.submissao.arquivo_texto_tfgrebanca.url }}" target="_blank" class="btn btn-sm btn-success">
+                  {% bootstrap_icon 'download' %}
+                </a>
+              {% else %}
+                <a href="" target="_blank" class="btn btn-sm btn-warning disabled">
+                  {% bootstrap_icon 'download' %}
+                </a>
+              {% endif %}
+            </td>
+
+            <td>
+              <small>TEXTO FINAL PARA BIBLIOTECA</small><br><br>
+              {% if  object.submissao.arquivo_texto_tfgfinal  %}
+                <a href="{{ object.submissao.arquivo_texto_tfgfinal.url }}" target="_blank" class="btn btn-sm btn-success">
+                  {% bootstrap_icon 'download' %}
+                </a>
+              {% else %}
+                <a href="" target="_blank" class="btn btn-sm btn-warning disabled">
+                  {% bootstrap_icon 'download' %}
+                </a>
+              {% endif %}
+            </td>
+          </tr>
+        </table>
+    </h4> 
+  </div>
+</div>
+
+<form class="form" role="form" method="POST" enctype="multipart/form-data" name="form_avaliacao_orientador"> 
+  {% csrf_token %}
+  {{ form.non_field_errors }} 
+  <!-- avaliador orientador -->
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <h3>Orientador! </h3>
+          <table class="table table-condensed table-responsive">
+            <tr>
+                <td> 
+                  Depois de avaliar <b>TEXTO PARA ORIENTADOR</b>, você considera seu orientando como APTO?
+                </td>
+                <td>
+                  {% bootstrap_field form.apto %}
+                </td>
+            </tr>
+            <tr>  
+              <td>
+                Depois da avaliação <b>COM OS MEMBROS DA BANCA</b>, seu orientando precisa de REBANCA?<br>
+                <small>Para o campo de parecer de rebanca aparecer, é preciso salvar o formulário atual!</small>
+              </td>
+              <td>
+                  {% bootstrap_field form.rebanca %}
+              </td>  
+            </tr>
+            </table>
+        </div>
+      </div>
+      <table class="table table-condensed table-responsive">
+        <thead>
+          <tr>
+            <th>Critérios de Avaliação</th>
+            <th>Peso</th>
+            <th>Avaliação (0 a 10)</th>
+            <th>Final</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              {{ form.merito_acompanhamento_orientador.label|upper }}<br>
+              <ul>
+                <li>Interesse demonstrado, iniciativa no desenvolvimento do trabalho,<br>frequência e participação nos encontros com o professor orientador</li>
+              </ul>
+            </td>
+            <td>
+              <input class="form-control" id="id_peso_merito_acompanhamento_orientador" value="{{ object.dic_pesos.merito_acompanhamento_orientador }}" readonly>
+            </td>
+            <td>
+              {{ form.merito_acompanhamento_orientador }}
+              <div class="text-danger">{{ form.merito_acompanhamento_orientador.errors }}</div>
+            </td>
+            <td>
+              <input class="form-control" id="id_nota_merito_acompanhamento_orientador" readonly>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              {{ form.merito_desenvolvimento_orientador.label|upper }}
+              <ul>
+                <li>Adequação entre teoria, método e objetivos</li>
+                <li>Atualização e adequação da bibliografia selecionada</li>
+                <li>Domínio do referencial teórico e bibliográfico</li>
+                <li>Análise crítica do problema e da solução</li>
+                <li>Contribuição pessoal</li>
+                <li>Contribuição para a área de conhecimento (aplicabilidade e/ou<br>características inovadoras)</li>
+                <li>Consistência com a proposta apresentada</li>
+              </ul>
+            </td>
+            <td>
+              <input class="form-control" id="id_peso_merito_desenvolvimento_orientador" value="{{ object.dic_pesos.merito_desenvolvimento_orientador }}" readonly>
+            </td>
+            <td>
+              {{ form.merito_desenvolvimento_orientador }}
+              <div class="text-danger">{{ form.merito_desenvolvimento_orientador.errors }}</div>
+            </td>
+            <td>
+              <input class="form-control" id="id_nota_merito_desenvolvimento_orientador" readonly>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              {{ form.merito_redacao_orientador.label|upper }}
+              <ul>
+                <li>Organização do trabalho</li>
+                <li>Coerência interna e progressão lógico-semântica</li>
+                <li>Bibliografia adequada e completa</li>
+                <li>Atendimento as normas IEEE</li>
+                <li>Redação clara e inteligível com correção gramatical</li>
+                <li>Introdução objetiva e precisa</li>
+                <li>Conclusão crítica</li>                  
+              </ul>
+            </td>
+            <td>
+              <input class="form-control" id="id_peso_merito_redacao_orientador" value="{{ object.dic_pesos.merito_redacao_orientador }}" readonly>
+            </td>
+            <td>
+              {{ form.merito_redacao_orientador }}
+              <div class="text-danger">{{ form.merito_redacao_orientador.errors }}</div>
+            </td>
+            <td>
+              <input class="form-control" id="id_nota_merito_redacao_orientador" readonly>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              {{ form.merito_apresentacao_orientador.label|upper }}
+              <ul>
+                <li>Domínio do Assunto</li>
+                <li>Organização do Conteúdo</li>
+                <li>Distribuição adequada do tempo</li>
+              </ul>
+            </td>
+            <td>
+              <input class="form-control" id="id_peso_merito_apresentacao_orientador" value="{{ object.dic_pesos.merito_apresentacao_orientador }}" readonly>
+            </td>
+            <td>
+              {{ form.merito_apresentacao_orientador }}
+              <div class="text-danger">{{ form.merito_apresentacao_orientador.errors }}</div>
+            </td>
+            <td>
+              <input class="form-control" id="id_nota_merito_apresentacao_orientador" readonly>
+            </td>
+          </tr>
+          <td><b>NOTA FINAL</b></td>
+            <td></td>
+            <td></td>
+            <td>  
+              <b>
+                <input class="form-control" id="id_nota_final_orientador" readonly>
+              </b>
+              <div class='hidden'>
+                {{ form.nota_final_orientador }}
+              </div>
+            </td>
+        </tbody>
+      </table>
+      {% bootstrap_field form.parecer_avaliador_orientador %}
+      {% if object.rebanca == 'SIM'%}
+        <hr>
+        <h2><span class="label label-warning">REBANCA</span></h2>
+        <hr>
+        {% bootstrap_field form.parecer_rebanca_avaliador_orientador %}<br>
+        <p>
+          Caso queira enviar novamente arquivo com correções, pode substituir o arquivo de sugestões anterior.
+        </p>
+      {% endif %}
+      {% bootstrap_field form.arquivo_corrigido_orientador %}
+    </div>
+  </div>
+  {% buttons submit='Gravar' %}
+    <a href="javascript:history.go(-1);" class="btn btn-warning" role="button">Voltar</a>
+  {% endbuttons %}
+</form>
+{% endblock %}

@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from decouple import config
+from dj_database_url import parse as db_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,15 +22,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '=%6aqk0p^aux0qvolqn_7efyj(@wh*wtc_!n10u8_o4!l#k6)h'
-
-# from django.core.management.utils import get_random_secret_key
-# print(get_random_secret_key())
+# SECRET_KEY = '=%6aqk0p^aux0qvolqn_7efyj(@wh*wtc_!n10u8_o4!l#k6)h'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = config('DEBUG', cast=bool)
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1']
+ALLOWED_HOSTS = ['localhost','127.0.0.1', 'saoa.lapinf.ufn.edu.br', 'www.saoa.lapinf.ufn.edu.br']
 
 AUTH_USER_MODEL = 'usuario.Usuario'
 
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
     'mail_templated',
     'widget_tweaks',
     
+    'appmembro',
     'aviso',
     'evento',
     'instituicao',
@@ -88,11 +90,19 @@ WSGI_APPLICATION = 'projeto.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': config(
+        'DATABASE_URL',
+        default='sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3'),
+        cast=db_url
+    )
 }
 
 
@@ -126,17 +136,32 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
+X_FRAME_OPTIONS = 'SAMEORIGIN' 
+SESSION_COOKIE_AGE = 60*60*24
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_SAVE_EVERY_REQUEST = True
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
+# https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = config('STATIC_URL')
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'projeto/static/')
+
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "uploads")
 MEDIA_URL = '/media/'
 
-DOMINIO_URL='http://localhost:8000'
+DOMINIO_URL = config("DOMINIO_URL")
+
+# Configuração do email
+EMAIL_BACKEND = config('EMAIL_BACKEND')
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT',cast=int)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS',cast=bool)
+EMAIL_USE_SSL = config('EMAIL_USE_SSL',cast=bool)
+EMAIL_USE_STARTTLS = config('EMAIL_USE_STARTTLS',cast=bool)

@@ -33,14 +33,14 @@ class Submissao(models.Model):
     data_hora_submissao = models.DateTimeField(auto_now_add=True)
     data_hora_alteracao_submissao = models.DateTimeField(auto_now=True)
     titulo =  models.CharField('Título *', max_length=100, help_text='Se for colar texto de outro aplicativo, certifique-se que o título esteja completo')
-    resumo = models.TextField('Resumo *', max_length=1000, help_text='Se for colar texto de outro aplicativo, certifique-se que o título esteja completo')
-    abstract = models.TextField('Abstract *', max_length=1000, help_text='Se for colar texto de outro aplicativo, certifique-se que o título esteja completo')
+    resumo = models.TextField('Resumo *', max_length=1000, help_text='Máximo caracteres: 1000. Se for colar texto de outro aplicativo, certifique-se que o resumo esteja completo')
+    abstract = models.TextField('Abstract *', max_length=1000, help_text='Máximo caracteres: 1000. Se for colar texto de outro aplicativo, certifique-se que o abstract esteja completo')
     palavras_chave =  models.CharField('Palavras-chave *', max_length=100, help_text='Escreva as palavras-chave separadas por ponto-e-vígura. Exemplo: Redes Neurais; Aprendizado de Máquina; Descoberta de Conhecimento')
     arquivo_sem_autores = models.FileField('Arquivo PDF de para avaliação (sem autores e identificação)', upload_to='midias', help_text='Utilize arquivo .PDF')
     arquivo_final = models.FileField('Arquivo PDF corrigido para a versão final',null=True, blank=True, upload_to='midias', help_text='Utilize arquivo .PDF')
     arquivo_comite_etica = models.FileField('Arquivo ZIPADO com documentação necessária de pesquisa em Humanos e Animais',null=True, blank=True, upload_to='midias', help_text='Utilize arquivo compactado .ZIP')
     status = models.CharField('Status da submissão', max_length=25, choices=STATUS, default='EM EDICAO')
-    observacoes = models.TextField('Registre justificativas e/ou apontamentos para o responsável da submissão', max_length=500,null=True,blank=True)
+    observacoes = models.TextField('Caso necessite, área para registro de justificativas e/ou apontamentos para o responsável da submissão', max_length=500,null=True,blank=True)
     is_active = models.BooleanField('Ativo', default=True, help_text='Se ativo, o Submissao está liberado para chamada de artigos')
     slug = models.SlugField('Hash',max_length= 200,null=True,blank=True)
 
@@ -70,6 +70,14 @@ class Submissao(models.Model):
     @property
     def get_delete_url(self):
         return reverse('submissao_delete', kwargs={'slug': self.slug})
+    
+    @property
+    def get_appmembro_absolute_url(self):
+        return reverse('appmembro_submissao_update', kwargs={'slug': self.slug})
+
+    @property
+    def get_delete_appmembro_url(self):
+        return reverse('appmembro_submissao_delete', kwargs={'slug': self.slug})
 
 
 #triggers para limpeza dos arquivos apagados ou alterados. No Django é chamado de signals

@@ -8,9 +8,9 @@
     - em evento numero_maximo de autores        
     - em submissao enviar email de registro de submissão para o responsável       
     - em evento categoria ou subárea do trabalho (???)
-    - no autocadastro termo de uso e política de funcionamento
+    - (OK) no autocadastro termo de uso e política de funcionamento
     - criar esquema de mandar email:
-        - no autocadastro
+        - (OK) no autocadastro
         - quando submissão é realizada
         - quando resultado da avaliação é finalizada
         - pensar no app critério ou usar um conjunto de critérios padrão baseado na revista disciplinarum (UFN)???
